@@ -1,108 +1,238 @@
-# Jupyter Hub
-## Using Jupyter Hub
+# JupyterHub
 
-Jupyter provides an interactive computing environment for different languages. The most popular use case is Python; Project Jupyter is a spin-off of the interactive Python (iPython) project.
+JupyterHub is an open-source service application that enables users to launch
+separate Jupyter instances on a remote server.
 
-With Jupyter Hub, you can run Python and R notebooks, or open a terminal directly on your browser.
+[ALCF JupyterHub](https://jupyter.alcf.anl.gov)
+provides access to Polaris with the same
+[authentication protocol](../account-project-management/accounts-and-access/obtaining-a-token.md)
+that is used to access these systems, but through a web interface rather than a
+terminal.
 
-You can log in to Theta, ThetaGPU, or Cooley instances of Jupyter Hub at [https://jupyter.alcf.anl.gov](https://jupyter.alcf.anl.gov) using your ALCF credentials.
-Theta Jupyter Hub instances runs on an external server ([jupyter02.mcp.alcf.anl.gov](http://jupyter02.mcp.alcf.anl.gov/)), but not on Theta login, mom, or compute nodes.
-Theta Jupyter Hub has access to your home folder (```/home/$USER```) and projects folders on theta-lustre, grand, and eagle file systems (```/projects, /grand, /eagle respectively```), but does not have access to ```/opt/cray, /opt/intel, etc.—that``` is, you cannot use any Theta modules or any Cray libraries.
-Cooley Jupyter Hub instances have access to the user's home folder (```/home/$USER```), and theta-lustre, grand, and eagle file systems (```/projects, /grand, /eagle respectively```).
-You can submit jobs to run on Theta/Cooley with ```!qsub myjob.sh```.
-You can customize your environment and add new kernels. To do so, you could run shell commands on a notebook cell by prepending them with ! (```i.e., !pwd```). However, it would be much easier to use the Jupyter terminal. You can open a terminal on the Jupyter Hub home page under Files/new menu. Using the terminal, you can create a new conda environment and a new Jupyter kernel with the commands below.
-For more information on how to manage conda environments, refer to this [page](https://conda.io/docs/user-guide/tasks/manage-environments.html).
+On the [ALCF JupyterHub home page](https://jupyter.alcf.anl.gov), users can
+choose their desired system.
 
+Upon selection, they'll be directed to the sign-in page to enter their ALCF
+username and 
+[passcode token](../account-project-management/accounts-and-access/logging-in-with-tokens.md).
+
+![JupyterHub](files/Jupyter-0-login.png)
+
+/// caption
+ALCF JupyterHub home page and sign-in screen
+///
+
+We describe below how to use JupyterHub on Polaris in more detail.
+
+## Polaris
+
+The Polaris JupyterHub server runs on a Polaris login node and launches
+individual users' environments on the compute nodes through the PBS job
+scheduler.
+
+After the authentication step, the user will be presented with the
+menu of the available job options to start the Jupyter instance.
+
+- Select a job profile: This field lists the available profiles, which is
+  limited to "Polaris Compute Node" at this time.
+- Queue Name: This field provides a list of available queues on the system.
+- Project List: This field displays the active projects associated with the
+  user on Polaris.
+- Number of Nodes: This field allows the user to select the number of compute
+  nodes to be allocated.
+- Runtime (minutes:seconds): This field allows the user to set the runtime of
+  the job in minutes and seconds. The user should refer to the
+  [Polaris queue scheduling policy](../polaris/running-jobs/index.md)
+  for minimum and maximum runtime allowed for the selected queue.
+- File Systems: This field allows the user to select the file systems to be
+  mounted.
+  By default, all the file systems are selected.
+
+![Add options](files/Jupyter-6-job-options.png)
+
+/// caption
+Polaris Job options
+///
+
+Once the appropriate information is provided, the user will click the "Start"
+button and wait for the job to spawn.
+
+If there's an extended wait time due to a lengthy job queue, the interface
+might time out, leading to the job's removal from the queue.
+
+If not, the job kicks off and it begins to use up the user's allocation based
+on the chosen job options.
+
+It's crucial for users to shut down the server when resources are no longer
+required.
+
+Failing to do so will result in continued consumption of the allocated time
+until the predetermined runtime concludes.
+
+![Job queued](files/Jupyter-3-job-queued.png)
+
+/// caption
+Job queued
+///
+
+!!! warning
+
+    If you would like to change your selection about where to run the Jupyter
+    instance after the Notebook has started, you need to stop the server to be able
+    to see the drop-down menu again.
+
+## Known Issues
+
+### Spawn Failed: Timeout
+
+This happens when the queue is backed up.
+Since Jupyter is interactive, it expects an immediate connection.
+Therefore, it waits 5 minutes for your job to begin before throwing this error.
+You can monitor the queue usage with
+[Gronk](https://status.alcf.anl.gov/#/polaris)
+and submit when there isn't a wait.
+
+## Additional Notes
+
+### Custom IPython Kernels
+
+ALCF JupyterHub provides a set of pre-configured IPython kernels for the users
+to select.
+
+However, users may need custom kernels with additional packages installed.
+
+This can be achieved by first creating custom Python environments either
+through
+[venv](https://docs.python.org/3/library/venv.html)
+or
+[conda](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
+
+More information on creating custom Python environments can be found in our
+documentation for [Polaris](../polaris/data-science/python.md).
+
+After activating the custom environment, the `ipykernel` package needs to be
+installed with the following command:
+
+```bash
+pip install ipykernel
 ```
-From terminal:
-conda create -n jhub_myenv
-source activate jhub_myenv
-conda install jupyter nb_conda ipykernel
-conda install any_module_you_need
-source deactivate
- 
-From notebook:
-!conda create -y -n jhub_myenv
-!source activate jhub_myenv; conda install -y jupyter nb_conda ipykernel
-!source activate jhub_myenv; conda install -y any_module_you_need
+
+Once `ipykernel` is installed, the custom kernel can be added to the list of
+available kernels with the following command:
+
+```bash
+python -m ipykernel install --user --name custom_kernel_name
 ```
 
-This will complete the installation of a new environment. To create a Jupyter kernel, additional work is necessary:
-```
-From terminal:
-source activate jhub_myenv
-python -m ipykernel install --user --name jhub_myenv
-source deactivate
- 
-From notebook:
-!source activate jhub_myenv; python -m ipykernel install --user --name jhub_myenv
-```
+where `custom_kernel_name` is the name of the kernel that will appear in the
+kernel list.
 
-After completing these steps, you will see jhub_myenv kernel when you click new on the Jupyter Hub home page or when you use Kernel menu on a Jupyter notebook.
+This name does not have to match the name of the environment, but
+should not contain spaces.
 
-- Use a name identifier (such as jhub_ prefix used above) on your Jupyter Hub conda environment to make sure you don’t mix them with conda environments you create on Cooley/Theta nodes.
+If you want more flexibility in naming, you can add
+the `--display-name` argument as shown below.
 
-## Accessing Project Folders:
-Jupyterhub limits to a user home directory the user's ability to browse the file system. To access a given project directory, the user must create a symbolic link in their home directory to the project directory:
-
-If a user is connected to the Cooley instances and wants to access Mira project ABC and Theta project EFG, the user should execute the following commands to create the links:
-
-```
-From terminal:
-ln -s /project/ABC ABC_project
-ln -s /lus/theta-fs0/projects/EFG EFG_project
- 
-From notebook:
-!ln -s /project/ABC ABC_project
-!ln -s /lus/theta-fs0/projects/EFG EFG_project
+```bash
+python -m ipykernel install --user --name custom_kernel_name --display-name "Polaris Python 3.11 Tensorflow 2.4.1"
 ```
 
-## Running a Notebook on a compute node
-The following guide gives direction for running a Jupyter Notebook on a compute node.  The default behavior for Jupyter in the ALCF environment is for Cobalt job submission to happen as part of user scripting.  The ability to run a Notebook on a compute node current exists on ThetaGPU, as of October 1, 2021.  Other ALCF resources will be added in the following months.
+Note that you still need to provide `--name` with a simple name that does not
+contain spaces.
 
-To access the capability, the user should log into the Jupyter instances from [https://jupyter.alcf.anl.gov](https://jupyter.alcf.anl.gov/).  After authenticating for any Jupyter service supporting compute node execution, the user will be presented with a drop down selection for "Select a job profile", with the options  “Local Host Process” and “{X} Compute Node”, where {X} is the resource in question, such as "ThetaGPU Compute Node" for ThetaGPU.
+Additionally, you can also set environment variables for the kernel with the
+`--env` argument, i.e:
 
-<figure markdown>
-  ![Select a job profile](files/Jupyter-1-job-profile.png){ width="700" }
-  <figcaption>Select a job profile</figcaption>
-</figure>
+```bash
+python -m ipykernel install --user --name custom_kernel_name --env http_proxy http://proxy.alcf.anl.gov:3128 --env https_proxy http://proxy.alcf.anl.gov:3128
+```
 
-Local Host Process” will start the Jupyter Notebook on the JupyterHub server (external to the compute resource) following the instructions given above in Using Jupyter Hub
+You can see the list of available kernels with the following command:
 
-"{X} Compute Node" will allow a user to start a Jupyter Notebook instance on an available compute node by requesting a node via the job scheduler, Cobalt.  When a user selects "{X} Compute Node" additional options will appear and must be selected.
+```bash
+jupyter kernelspec list
+```
 
-- "{X} Queue (MinTime/MaxTime)". This field provide a list of available queues on the system.  In most cases a user should use “single-gpu” or “full-node” depending on their job requirements.
-- Project List.  This field displays the active projects associated with the user on the given system (ThetaGPU).
-- Runtime (minutes).  This field allows the user to set the runtime of the job in minutes.  The user should refer to the ThetaGPU Queue (MinTime/MaxTime) for the minimum and maximum runtime allowed for a selected queue.
+By default, the kernels are installed in the user's home directory under
+`~/.local/share/jupyter/kernels/`.
 
-<figure markdown>
-  ![Add options](files/Jupyter-2-job-options.png){ width="700" }
-  <figcaption>Add options</figcaption>
-</figure>
+All the configuration is specified in the `kernel.json` file under the kernel
+directory.
 
-Once the appropriate information is provided the user will click the “Start” button and wait for the job to spawn.  In cases where the job queue is long the interface will time out and the job will be removed from the queue.
+For the example above, the path for the json file will be
+`~/.local/share/jupyter/kernels/custom_kernel_name/kernel.json`.
 
-<figure markdown>
-  ![Job queued](files/Jupyter-3-job-queued.png){ width="700" }
-  <figcaption>Job queued</figcaption>
-</figure>
+You can edit this file to add additional environment variables or change the
+display name.
 
-### End a Jupyter Notebook running on a compute node ###
-When a user has completed their task in Jupyter the user should stop the Jupyter instance running on the compute node before logging out.  Failing to correctly end a running Jupyter Notebook will continue to consume the selected Project's allocation on the resource in question.  To stop the Notebook, click the “Control Panel” button in the top right, then click “Stop My Server”.
+Once you've followed the steps above, your new kernel will be visible on
+JupyterHub.
 
-<figure markdown>
-  ![Stop panel](files/Jupyter-4-stop-panel.png){ width="700" }
-  <figcaption>Stop panel</figcaption>
-</figure>
+It's recommended to perform these steps in a terminal, ideally on the login
+node of the system you're using.
 
-<figure markdown>
-  ![Stop server](files/Jupyter-5-stop-server.png){ width="700" }
-  <figcaption>Stop server</figcaption>
-</figure>
+After setting up a custom kernel, you can easily add more packages directly
+within JupyterHub.
 
-Note: To specify a custom Jupyter kernel, users may configure them in the files located at ```/home/<userid>/.local.share/jupyter/kernels/```. It is the user's responsibility to ensure that the Python environment specified in that custom kernel is present and functional.
+Simply create a new notebook using your custom kernel and use the `%pip` or
+`%conda` magic commands to install packages.
 
-## Hardware 
-- CPU : Intel(R) Xeon(R) CPU E5-2683
-- RAM : 512GB
-- GPU: None 
+If you're on a compute node, remember to enable internet access by configuring
+the `http_proxy` and `https_proxy` environment variables as previously
+mentioned.
+
+### Accessing Project Folders
+
+The Jupyter file browser limits the user to view files and directories within
+their home directory.
+
+To access directories located outside of the user home directory, a symbolic
+link to the directory must be created within the user home directory.
+
+An example of this is:
+
+```bash
+ln -s /project/ABC ~/ABC_project_link
+```
+
+Please note that one can run any shell command directly on a Jupyter notebook
+by simply adding an exclamation mark, `!`, to the beginning of the command.
+
+For example, the above command can be run from a notebook cell as follows:
+
+```bash
+!ln -s /project/ABC ~/ABC_project_link
+```
+
+### Ending a Jupyter Notebook running on a compute node
+
+Failing to correctly end a running Jupyter Notebook will continue to consume
+the selected project's allocation on the resource in question.
+
+When a user has completed their task in Jupyter, the user should stop the
+Jupyter instance running on the compute node before logging out.
+
+To stop the Notebook, click the "Control Panel" button in the top right, then
+click "Stop My Server".
+
+![Stop panel](files/Jupyter-4-stop-panel.png)
+
+/// caption
+Stop panel
+///
+
+![Stop server](files/Jupyter-5-stop-server.png)
+
+/// caption
+Stop server
+///
+
+## Resources
+
+- Jupyter Lab [documentation](https://jupyterlab.readthedocs.io/en/stable/).
+- ALCF Hands-on HPC Workshop presentation on Python and Jupyter on Polaris:
+    - [slides](https://www.alcf.anl.gov/support-center/training-assets/python-jupyter-notebook-and-containers)
+    - [video](https://youtu.be/fhCe5eO1RSM)
+- ALCF webinar on JupyterHub:
+    - [slides](https://github.com/keceli/ezHPC/blob/main/webinar/jupyterhub_webinar.pdf)
+    - [video](https://youtu.be/X9g9eQcYseI?feature=shared)
