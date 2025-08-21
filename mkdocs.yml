@@ -158,6 +158,7 @@ nav:
     - support/index.md
     - Contact:
       - Submit a Ticket: support/technical-support.md
+      - Mailing Lists: support/mailing-lists.md
       - Request Software: support/software-requests.md
       - ALCF Users Slack: support/alcf-users-slack.md
       - Contribute to User Guides: support/docs-issues.md
@@ -284,6 +285,7 @@ nav:
         - Virtual Environments: ai-testbed/groq/virtual-environments.md
         - Job Queueing and Submission: ai-testbed/groq/job-queuing-and-submission.md
         - Profiling with GroqView: ai-testbed/groq/groqview.md
+        - Examples: ai-testbed/groq/examples.md
       - SambaNova:
         - ai-testbed/sambanova/index.md
         - Getting Started: ai-testbed/sambanova/getting-started.md
@@ -298,6 +300,10 @@ nav:
         - SambaTune for profiling and performance tuning: ai-testbed/sambanova/sambatune.md
         - Miscellaneous: ai-testbed/sambanova/miscellaneous.md
         - SambaNova Documentation: ai-testbed/sambanova/documentation.md
+      - SN40L Inference:
+        - ai-testbed/sn40l_inference/index.md
+        - Getting Started: ai-testbed/sn40l_inference/getting-started.md
+        - Using an Inference Endpoint: ai-testbed/sn40l_inference/using_an_inference_endpoint.md
         # - Performance Tools: ai-testbed/sambanova/performance-tools.md
       - Data Management: ai-testbed/data-management/data-management-overview.md
 
@@ -351,7 +357,6 @@ nav:
           - XALT: polaris/applications-and-libraries/libraries/xalt.md
       - Containers: polaris/containers/containers.md
       - Data Science:
-        - Julia: polaris/data-science/julia.md
         - Python: polaris/data-science/python.md
         - Profiling: polaris/data-science/profiling_dl.md
         - Frameworks:
@@ -368,6 +373,7 @@ nav:
         - OpenMP: polaris/programming-models/openmp-polaris.md
         - SYCL: polaris/programming-models/sycl-polaris.md
         - Kokkos: polaris/programming-models/kokkos-polaris.md
+        - Julia: polaris/programming-models/julia.md
       - Debugging Tools:
         - CUDA-GDB: polaris/debugging-tools/CUDA-GDB.md
       - Performance Tools:
@@ -396,6 +402,7 @@ nav:
       - Data Science:
         - Python: sophia/data-science/python.md
         - Fine-tuning with Autotrain: sophia/data-science/fine-tune-LLM-with-Autotrain.md
+        - Dask: sophia/data-science/dask.md
       - Visualization:
         - sophia/visualization/index.md
         - ParaView (Launch from Client): sophia/visualization/paraview.md
@@ -420,6 +427,7 @@ nav:
 
   - Services:
     - services/index.md
+    - Inference Endpoints: services/inference-endpoints.md
     - JupyterHub: services/jupyter-hub.md
     - Continuous Integration:
       - General: services/continuous-integration.md
